@@ -1,0 +1,118 @@
+.offset-input {
+  position: relative;
+  left: 0;
+  width: 60%;
+}
+
+.minutes {
+  width: 100%;
+  min-width: 40px;
+  max-width: 80px;
+}
+
+.hours {
+  width: 100%;
+  min-width: 40px;
+  max-width: 80px;
+  margin-right: 20px;
+}
+
+.time-btn {
+  border: none;
+  margin-left: 20px;
+  height: 0.24rem;
+  background-color: #fe6060;
+  color: white;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+.time-btn:hover {
+  background-color: rgba(231, 48, 77, 0.99);
+}
+
+.coord-btn {
+  margin-right: 0.05rem;
+  border: none;
+  height: 0.2rem;
+  background-color: #fe6060;
+  color: white;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+.coord-btn:hover {
+  background-color: rgba(231, 48, 77, 0.99);
+}
+
+.title-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+  background-color: transparent !important;
+}
+
+.area {
+  width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+  .hours,
+  .minutes {
+    max-width: 30%;
+  }
+  .time-btn {
+    height: 40px;
+    width: 80px;
+    font-size: 12px;
+  }
+
+  .coord-btn {
+    height: 30px;
+    width: 80px;
+    font-size: 12px;
+  }
+}
+
+.time-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.label-sub-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 60px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-weight: 350;
+}
+/* iphone 5 */
+@media screen and (max-width: 321px) and (max-height: 569px) {
+  .label-sub-container {
+    top: 45px;
+    font-size: 6px;
+  }
+  .label-container {
+    top: 175px;
+    font-size: 6px;
+  }
+}
+
+/* mdpi */
+@media only screen and (min-width: 1200px) and (max-width: 1281px) and (max-height: 801px) {
+  .label-sub-container {
+    top: 70px;
+  }
+}
+
+.link-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}

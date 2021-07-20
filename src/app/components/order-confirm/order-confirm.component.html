@@ -1,0 +1,7 @@
+<div class="message" *ngIf="order; else falseOrder">
+  {{order.payerName}}, ваш заказ № {{order.id}} оформлен, скоро менеджер свяжется с вами для уточнения заказа.
+</div>
+
+<ng-template #falseOrder>
+  Вероятно, вы попали на эту страницу ошибочно, либо ваш заказ еще в обработке.
+</ng-template>

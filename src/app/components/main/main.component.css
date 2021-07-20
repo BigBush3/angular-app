@@ -1,0 +1,19 @@
+.content-block {
+  padding: 30px;
+  margin: 20px 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-text {
+  text-align: justify;
+  width: 1000px;
+}
+
+.content-image {
+  width: 500px;
+  border-radius: 5px;
+}

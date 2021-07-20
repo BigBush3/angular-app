@@ -1,0 +1,20 @@
+<div
+  class="complete-section"
+  
+>
+  <div class="sub-section" *ngIf="!isLoading(); else loading">
+    <div *ngIf="paid && status === 'succeeded'; else falsePayment">
+      Ваш заказ успешно оплачен, письмо выслано на почту, заказ сохранен в базу
+      данных.
+    </div>
+  </div>
+</div>
+
+<ng-template #falsePayment>
+  Вероятно вы попали эту страницу ошибочно, либо ваш заказ еще обрабатывается.
+</ng-template>
+
+<ng-template #loading>
+  <span style="margin-bottom: 15px;">Ваш заказ обрабатывается, пожалуйста не закрывайте эту страницу.</span>
+  <mat-spinner></mat-spinner>
+</ng-template>

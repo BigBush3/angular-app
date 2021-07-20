@@ -1,0 +1,362 @@
+<div class="checkout-wrapper" (keyup)="validateForm()">
+  <div class="checkout-title">Оформление заказа</div>
+  <div class="product-container">
+    <div *ngIf="products.length === 0">
+      Вы пока не добавили ни одной карты в вашу корзину.
+    </div>
+    <div *ngFor="let product of products" class="product">
+      <img
+        class="product-img"
+        src="/assets/checkout/{{ product.preview }}.png"
+        alt="map pic"
+      />
+      <div class="product-table">
+        <table>
+          <tr>
+            <td class="td-name">Тип:</td>
+            <td>Звездная карта</td>
+          </tr>
+          <tr>
+            <td class="td-name">Заголовок:</td>
+            <td>{{ product.poster.text.title }}</td>
+          </tr>
+          <tr>
+            <td class="td-name">Сообщение:</td>
+            <td>{{ product.poster.text.message }}</td>
+          </tr>
+          <tr>
+            <td class="td-name">Дата:</td>
+            <td>{{ product.poster.text.fullDate }}</td>
+          </tr>
+          <tr>
+            <td class="td-name">Размер:</td>
+            <td>{{ product.size }}</td>
+          </tr>
+          <tr>
+            <td class="td-name">Тип заказа:</td>
+            <td>{{ product.type }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="product-edit">
+        <select
+          (change)="updateQuantity($event.target, product.poster)"
+          class="select-count"
+        >
+          <option value="{{ product.quantity }}">
+            {{ product.quantity }}
+          </option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <button class="product-btn" (click)="removeProduct(product.poster)">
+          Удалить
+        </button>
+      </div>
+      <div class="product-price">{{ product.price * product.quantity }}р.</div>
+    </div>
+  </div>
+  <div class="delivery-container">
+    <div class="delivery-header">1. Контакты плательщика</div>
+    <form class="checkout-form">
+      <label for="name">
+        <input
+          [(ngModel)]="payerName"
+          type="text"
+          id="payerName"
+          name="name"
+          placeholder="Имя и фамилия"
+        />
+      </label>
+      <label for="email">
+        <input
+          [(ngModel)]="email"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="E-mail"
+        />
+      </label>
+      <label class="phone-wrap" for="phone">
+        <input
+          [(ngModel)]="payerPhone"
+          type="text"
+          id="payerPhone"
+          name="phone"
+          placeholder="Номер телефона"
+        />
+      </label>
+      <!-- <label for="delivery-type">
+        Способ доставки
+        <select
+          [(ngModel)]="deliveryType"
+          name="delivery-type"
+          id="delivery-type"
+        >
+          <option value="1">Вариант 1</option>
+          <option value="2">Вариант 2</option>
+          <option value="3">Вариант 3</option>
+        </select>
+      </label> -->
+      <div class="delivery-header">2. Контакты получателя посылки</div>
+      <label for="name">
+        <input
+          [(ngModel)]="takerName"
+          type="text"
+          id="takerName"
+          name="name"
+          placeholder="Имя и фамилия"
+        />
+      </label>
+      <label for="phone">
+        <input
+          [(ngModel)]="takerPhone"
+          type="text"
+          id="takerPhone"
+          name="phone"
+          placeholder="Номер телефона"
+        />
+      </label>
+    </form>
+    <div style="width: 100%; max-width: 700px; justify-content: center;" *ngIf="!orderIsDigital">
+      <div class="delivery-header">3. Доставка</div>
+      <div class="delivery-types-wrap">
+        <div
+          class="delivery-type"
+          [ngClass]="deliveryType === 'самовывоз' ? 'active' : ''"
+          (click)="setDeliveryType('самовывоз')"
+        >
+          <span class="delivery-type-header">Самовывоз 300р</span>
+          <span class="delivery-type-sub">Из ближайшего пункта выдачи</span>
+        </div>
+        <div
+          class="delivery-type"
+          [ngClass]="deliveryType === 'курьер' ? 'active' : ''"
+          (click)="setDeliveryType('курьер')"
+        >
+          <span class="delivery-type-header">Курьером от 500р</span>
+          <span class="delivery-type-sub">До двери</span>
+        </div>
+      </div>
+      <label for="country">
+        Выберите страну
+        <select (change)="changeCountry($event)" class="select-count">
+          <option value="1">Россия</option>
+          <option value="2">Казахстан</option>
+          <option value="3">Беларусь</option>
+          <option value="4">Армения</option>
+          <option value="5">Киргизия</option>
+        </select>
+      </label>
+      <label for="city">
+        Выберите город
+        <!-- <select (change)="changeCity($event)" (change)="validateForm()" class="select-count">
+          <option *ngFor="let city of chosenCities" value="{{ city.code }}">
+            {{ city.name }}
+          </option>
+        </select> -->
+        <input
+          [(ngModel)]="city"
+          (ngModelChange)="searchCity()"
+          name="city"
+          id="city"
+          type="text"
+        />
+      </label>
+      <div class="search-wrap" *ngIf="showSearchCityBar">
+        <div
+          *ngFor="let city of filteredCities"
+          (click)="setCity(city)"
+          (click)="hideCitySearch()"
+          class="search-field"
+        >
+          <div
+            *ngIf="
+              city.city !== city.region && city.region !== city.sub_region;
+              else onlyCity
+            "
+          >
+            {{ city.city }}, {{ city.region }}, {{ city.sub_region }}
+          </div>
+          <ng-template #onlyCity>{{ city.city }}</ng-template>
+        </div>
+      </div>
+      <div
+        style="display: flex; justify-content: center"
+        *ngIf="deliveryType === 'самовывоз'; else courier"
+      >
+        <label for="pvz">
+          Пункт выдачи заказа
+          <select
+            type="object"
+            name="pvz"
+            id="pvz"
+            [(ngModel)]="selectedOffice"
+            (ngModelChange)="changePvz($event)"
+            (ngModelChange)="validateForm()"
+            class="select-count"
+          >
+            <option *ngFor="let office of chosenOffices" [ngValue]="office">
+              {{ office.location.address }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <ng-template #courier>
+        <form class="checkout-form">
+          <label for="street">
+            <input
+              [(ngModel)]="street"
+              type="text"
+              id="street"
+              name="street"
+              placeholder="Улица"
+            />
+          </label>
+          <div class="input-wrap">
+            <label for="house">
+              <input
+                [(ngModel)]="house"
+                type="text"
+                id="house"
+                name="house"
+                placeholder="Дом"
+              />
+            </label>
+            <label for="appartment">
+              <input
+                [(ngModel)]="appartment"
+                type="text"
+                id="appartment"
+                name="appartment"
+                placeholder="Квартира"
+              />
+            </label>
+          </div>
+        </form>
+      </ng-template>
+      <div class="delivery-time">
+        <span class="delivery-time-header"
+          >Доставим заказ {{ deliveryTime }}</span
+        >
+        <span class="delivery-time-sub"
+          >Рассчитывается автоматически исходя из сроков доставки. <br />Дата
+          актуальна при оплате/подтверждении заказа в течение 20 минут</span
+        >
+        <label class="skip-payment-wrap"
+          ><input
+            class="checkbox"
+            [(ngModel)]="skipPayment"
+            type="checkbox"
+            name="skipPayment"
+            id="skipPayment"
+          />Мне не подходят сроки доставки.</label
+        >
+      </div>
+    </div>
+  </div>
+  <div class="payment-container">
+    <div class="delivery-header">{{orderIsDigital ? '3' : '4'}}. Способ оплаты</div>
+    <!-- <span class="payment-header">Оплата на сайте</span> -->
+    <div class="payment-types-wrap">
+      <!-- <div
+        class="delivery-type"
+        [ngClass]="paymentType === 'при получении' ? 'active' : ''"
+        (click)="setPaymentType('при получении')"
+      >
+        <span class="delivery-type-header">Оплата наличными</span>
+        <span class="delivery-type-sub">При получении заказа</span>
+      </div> -->
+      <div
+        class="delivery-type"
+        [ngClass]="paymentType === 'юкасса' ? 'active' : ''"
+      >
+        <span class="delivery-type-header">{{skipPayment ? 'Не подходит' : 'Юкасса'}}</span>
+        <span class="delivery-type-sub">{{skipPayment ? 'Оплата после согласования с менеджером' : 'Оплата на сайте ЮКасса'}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="delivery-container">
+    <div class="delivery-header">{{orderIsDigital ? '4' : '5'}}. Комментарий к заказу</div>
+    <label class="commentary" for="commentary">
+      <input
+        [(ngModel)]="commentary"
+        type="text"
+        id="commentary"
+        name="commentary"
+        placeholder="Комментарий к заказу"
+      />
+    </label>
+    <span class="commentary-sub commentary"
+      >Мы отправляем заказы в печать автоматически. Если у вас остались вопросы
+      по макету, доставке, качеству печати и т.д., оставьте комментарий.
+      Менеджер свяжется с вами в ближайшее время.</span
+    >
+  </div>
+  <div class="summary-container">
+    <div class="summary-col">
+      <div class="promo">
+        <input
+          [(ngModel)]="promocode"
+          class="promo-input"
+          type="text"
+          name="promocode"
+          id="promocode"
+          placeholder="Промокод"
+        />
+        <button (click)="applyPromocode()" class="phone-btn">Применить</button>
+      </div>
+      <!-- <div class="delivery-time">Срок доставки: 5 дней</div>
+      <button class="order-btn">Не подходят сроки доставки</button> -->
+    </div>
+    <div class="summary-col">
+      <table class="summary-table">
+        <tr>
+          <td>Товары:</td>
+          <td class="right">{{ productsPrice }}р.</td>
+        </tr>
+        <tr>
+          <td>Доставка:</td>
+          <td class="right">{{ getDeliveryPrice() }}р.</td>
+        </tr>
+        <tr>
+          <td>Скидка:</td>
+          <td class="right">{{ discount }}р.</td>
+        </tr>
+        <tr>
+          <td>Всего:</td>
+          <td class="right">{{ totalPrice }}р.</td>
+        </tr>
+      </table>
+      <div *ngIf="checkOrderType(); else order">
+        <button
+          (click)="getPayment()"
+          [disabled]="isValidOrder()"
+          class="order-btn"
+        >
+          Оплатить
+        </button>
+      </div>
+      <ng-template #order>
+        <div class="order-confirm">
+          <button
+            (click)="sendOrder()"
+            [disabled]="isValidOrder() || orderLoading"
+            class="order-btn"
+          >
+            <div *ngIf="!orderLoading; else loading">Оформить заказ</div>
+            <ng-template #loading>
+              <mat-spinner [diameter]="50"></mat-spinner>
+            </ng-template>
+          </button>
+          <span class="text-sm">С вами свяжется менеджер для уточнения деталей доставки.</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- <button (click)="sendSvg()">test svg</button> -->

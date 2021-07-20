@@ -1,0 +1,37 @@
+.routerLink {
+  text-decoration: none;
+}
+
+.nav-mob {
+  font-size: 0.4rem;
+}
+
+.btn-header-custom {
+  width: auto;
+  /* margin: 0.3525641rem auto 0.32051282rem; */
+  text-align: center;
+  border-radius: 15px;
+  font-size: 12px;
+  padding: 12px 24px;
+  border: 2px solid #4e4e4e;
+  -webkit-transition: 150ms all ease-in-out;
+  -moz-transition: 150ms all ease-in-out;
+  -o-transition: 150ms all ease-in-out;
+  transition: 150ms all ease-in-out;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-header-custom:hover {
+  pointer-events: all;
+  color: #fff;
+  background-color: #4e4e4e;
+}
+
+.btn-header-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
